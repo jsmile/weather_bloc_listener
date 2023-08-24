@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../models/custom_error.dart';
-import '../../models/weather.dart';
-import '../../repositories/weather_repository.dart';
+import '/models/custom_error.dart';
+import '/models/weather.dart';
+import '/repositories/weather_repository.dart';
 
 part 'weather_event.dart';
 part 'weather_state.dart';

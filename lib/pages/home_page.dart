@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:recase/recase.dart';
 
 import '/blocs/blocs.dart';
 import '/pages/search_page.dart';
-import 'package:recase/recase.dart';
 
 import '/constants/constants.dart';
 import '/utils/ansi_color.dart';

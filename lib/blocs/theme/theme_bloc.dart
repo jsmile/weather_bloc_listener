@@ -1,9 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
-import '/blocs/blocs.dart';
 import '/constants/constants.dart';
 
 part 'theme_event.dart';
