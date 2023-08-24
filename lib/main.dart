@@ -39,29 +39,32 @@ class MyApp extends StatelessWidget {
             create: (context) => TempSettingsBloc(),
           ),
           BlocProvider<ThemeBloc>(
-            create: (context) => ThemeBloc(
-              weatherBloc: context.read<WeatherBloc>(),
-            ),
-          )
+            create: (context) => ThemeBloc(),
+          ),
         ],
-        // context 적용 시
-        // Error: Could not find the correct Provider<ThemeBloc> 문제 해결을 위해
-        // 올바른 context 의 지정이 필요하므로 builder 를 사용해야 하고
-        // 이를 위해 BlocBuilder<xxxBloc, xxxState>( builder: (context, state) { ... } ) 적용.
-        child: BlocBuilder<ThemeBloc, ThemeState>(
-          builder: (context, state) {
-            return MaterialApp(
-              title: 'Flutter BLoC - OpenWeather Bloc',
-              debugShowCheckedModeBanner: false,
-              theme:
-                  // BlocBuilder<>() 가 context.watch<> 역할을 하므로 삭제
-                  // context.watch<ThemeBloc>().state.appTheme == AppTheme.light
-                  state.appTheme == AppTheme.light
-                      ? ThemeData.light()
-                      : ThemeData.dark(),
-              home: const HomePage(),
-            );
+        // 구독신청 했던 Bloc의 State 를 Listen 할 수 있도록 변환시키기 위해
+        // BlocListener<xxxBloc, xxxState>() 로 감싸고,
+        // listener 에서 원하는 상태변화를 처리함.
+        child: BlocListener<WeatherBloc, WeatherState>(
+          listener: (context, state) {
+            // 아래처럼 Bloc 에서 처리할 수도 있고, UI의 이 위치에서 처리할 수도 있음.
+            context.read<ThemeBloc>().changeTheme(state.weather.temp);
           },
+          child: BlocBuilder<ThemeBloc, ThemeState>(
+            builder: (context, state) {
+              return MaterialApp(
+                title: 'Flutter BLoC - OpenWeather Bloc',
+                debugShowCheckedModeBanner: false,
+                theme:
+                    // BlocBuilder<>() 가 context.watch<> 역할을 하므로 삭제
+                    // context.watch<ThemeBloc>().state.appTheme == AppTheme.light
+                    state.appTheme == AppTheme.light
+                        ? ThemeData.light()
+                        : ThemeData.dark(),
+                home: const HomePage(),
+              );
+            },
+          ),
         ),
       ),
     );
