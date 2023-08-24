@@ -9,29 +9,9 @@ import '/constants/constants.dart';
 part 'theme_event.dart';
 part 'theme_state.dart';
 
+// 참조 Bloc 및 StreamSubscription 과 관련된 것들을 모두 지우고
 class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
-  // 온도 정보를 받아서 그에 따라 Theme 를 변경해야 하므로
-  // 참조할 Bloc 와 StreamSubscription 선언
-  final WeatherBloc weatherBloc;
-  // 생성자 함수의 body 에서 초기화할 것이므로 late 선언
-  late final StreamSubscription weatherBlocSubscription;
-
-  ThemeBloc({
-    required this.weatherBloc,
-  }) : super(ThemeState.initial()) {
-    // 참조할 Bloc 의 State 에 구독신청을 하고
-    weatherBlocSubscription = weatherBloc.stream.listen(
-      (WeatherState state) {
-        // 참조한 Bloc 의 State 가 변경되면 변경 내용을 반영
-        // EventHandler 안이 아니므로 add( Event ) 형식으로 반영
-        if (state.weather.temp > kWarmOrNot) {
-          add(const ChangeThemeEvent(appTheme: AppTheme.light));
-        } else {
-          add(const ChangeThemeEvent(appTheme: AppTheme.dark));
-        }
-      },
-    );
-
+  ThemeBloc() : super(ThemeState.initial()) {
     // EventHandler 등록 및 정의
     on<ChangeThemeEvent>((event, emit) {
       // EventHandler 안이므로 emit( State ) 형식으로 직접 반영
@@ -40,10 +20,14 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
     });
   }
 
-  // 참조한 Bloc 의 State 에 구독신청을 해제
-  @override
-  Future<void> close() {
-    weatherBlocSubscription.cancel();
-    return super.close();
+  // StreamScubcritpiton 의 stream.listen 에서 했던 작업을 함수로 변환
+  // 날씨의 온도를 받아서 온도에 따라서 AppTheme 을 변경하는 함수
+  void changeTheme(double temperture) {
+    if (temperture > kWarmOrNot) {
+      // EventHandler 안이 아니므로 add( Event() ) 형식으로 호출
+      add(const ChangeThemeEvent(appTheme: AppTheme.light));
+    } else {
+      add(const ChangeThemeEvent(appTheme: AppTheme.dark));
+    }
   }
 }
